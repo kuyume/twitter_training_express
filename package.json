@@ -1,0 +1,19 @@
+{
+  "name": "twitter_training_express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "author": "kuyume_",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.13.2"
+  },
+  "type": "module",
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
