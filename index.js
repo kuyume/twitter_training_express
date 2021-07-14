@@ -1,9 +1,13 @@
 import express from 'express'
 import mongoose from 'mongoose'
+import cors from 'cors'
 import rootRouter from './router/rootRouter.js'
 
 // expressサーバーをインスタンス化する
 const express_srv = express()
+
+// ExpressでCORSを許可
+express_srv.use(cors())
 
 // データベースに接続(token, option, function)
 mongoose.connect(

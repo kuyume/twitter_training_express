@@ -68,6 +68,18 @@ const addUserModel = async (userModelObj) => {
   }
 }
 
+const findUserModelById = ( userId ) => {
+  const foundUserModelWithId = userModel.findById(
+    userId,
+    (err, foundUserModel) => {
+      if ( err ) {
+        return 'an Error ocurred in function \'findUserModelById\'.'
+      }
+    }
+  )
+  return foundUserModelWithId
+}
+
 const getAllUsers = async () => {
   const allUsers = await userModel.find(
     {},
@@ -80,5 +92,5 @@ const getAllUsers = async () => {
   return allUsers
 }
 
-export { addUserModel, getAllUsers }
+export { addUserModel, findUserModelById, getAllUsers }
 export default userModel

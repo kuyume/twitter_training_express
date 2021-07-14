@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import userModel, { findUserModelById } from './userModel.js'
 
 const mongooseSchema = mongoose.Schema 
 
@@ -36,7 +37,16 @@ const addPostModel = async ( postModelObj ) => {
   try {
 
     // バリデーション後に新しい投稿を登録
-    const savedPostModel = newPostModel.save()
+    const savedPostModel = await newPostModel.save()
+
+    // ユーザーモデルのpostに当該postを追加
+    const foundUserModelWithId = await findUserModelById( postModelObj.owner )
+    foundUserModelWithId.save(
+      {}
+    )
+    console.log(savedPostModel)
+    foundUserModelWithId.post.push(savedPostModel._id)
+
 
     // 登録に成功したら成功したユーザーのオブジェクトを返す
     return savedPostModel
@@ -71,7 +81,20 @@ const findPostModelById = ( postId ) => {
   return foundPostModelWithId
 }
 
+const findAllPosts = () => {
+  const foundAllPosts = postModel.find(
+    {},
+    (err, foundAllPosts) => {
+      if( err ) {
+        return 'an Error ocurred in function \'findAllPosts\'.'
+      }
+    }
+  )
+
+  return foundAllPosts
+}
+
 const postModel = mongoose.model('Post', postModelSchema)
 
 export default postModel
-export { addPostModel, findPostModelByUser, findPostModelById }
+export { addPostModel, findPostModelByUser, findPostModelById, findAllPosts }

@@ -18,7 +18,7 @@ you need to write './module.js'.
 
 - **CONFIRM TESTS AROUND DB SCHEMA**
 
-- when you define any function about model, at first found model can be many or not.
+- when you define any function about model, at first found model can be many or not
 
 # PENDING
 

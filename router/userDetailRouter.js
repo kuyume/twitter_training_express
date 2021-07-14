@@ -22,8 +22,8 @@ userDetailRouter
   async (req, res) => {
     const addResult = await addPostModel({
       owner: req.params.userId,
-      title: 'testTitle',
-      content: 'testContent'
+      title: 'testTitle4',
+      content: 'testContent4'
     })
 
     res.send(addResult)

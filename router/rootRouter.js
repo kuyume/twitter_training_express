@@ -1,7 +1,8 @@
 import express from 'express'
 import userRouter from './userRouter.js'
 import postRouter from './postRouter.js'
-import { getAllUsers } from '../model/userModel.js' 
+import { getAllUsers } from '../model/userModel.js'
+import { findAllPosts } from '../model/postModel.js'
 
 const rootRouter = express.Router()
 
@@ -18,7 +19,6 @@ rootRouter.get(
   // ユーザーモデルから条件なしで前ユーザーを取得
   async (req, res) => {
     const allUsers = await getAllUsers()
-    console.log(allUsers)
     res.send(allUsers)
   }
 )
@@ -26,8 +26,9 @@ rootRouter.get(
 // 投稿アーカイブページのルーティングを定義(/post)
 rootRouter.get(
   '/post',
-  (req, res) => {
-    res.send('post archive page.')
+  async (req, res) => {
+    const allPosts = await findAllPosts()
+    res.send(allPosts)
   }
 )
 
