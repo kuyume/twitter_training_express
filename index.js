@@ -21,7 +21,10 @@ mongoose.connect(
     useUnifiedTopology: true, // ??? unknown
     useCreateIndex: true // apply useCreateIndex to create index in userModelSchema
   },
-  () => {
+  ( err ) => {
+    if ( err ) {
+      return console.error( err )
+    }
     console.log('DB connected.')
   }
 )

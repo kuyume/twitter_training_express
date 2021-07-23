@@ -8,7 +8,6 @@ postRouter
   '/:postId',
   async (req, res) => {
     const foundPostModelWithId = await findPostModelById( req.params.postId )
-
     res.send(foundPostModelWithId)
   }
 )

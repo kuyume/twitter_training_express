@@ -25,6 +25,9 @@ userDetailRouter
       title: 'testTitle4',
       content: 'testContent4'
     })
+    addResult.catch(( err ) => {
+      return err
+    })
 
     res.send(addResult)
   }

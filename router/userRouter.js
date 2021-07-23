@@ -31,7 +31,7 @@ userRouter
   async (req, res) => {
 
     // URLパラメーターのuserIdを引数に渡してモデルインスタンスをDB内で検索
-    await userModel.findById(
+    const foundUser = await userModel.findById(
       req.params.userId,
       (err, paramsUser) => {
 

@@ -19,6 +19,10 @@ rootRouter.get(
   // ユーザーモデルから条件なしで前ユーザーを取得
   async (req, res) => {
     const allUsers = await getAllUsers()
+    allUsers.catch(( err ) => {
+      return err
+    })
+
     res.send(allUsers)
   }
 )

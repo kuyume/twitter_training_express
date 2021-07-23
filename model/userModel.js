@@ -54,6 +54,9 @@ const addUserModel = async (userModelObj) => {
   try {
     // バリデーション後に新しいユーザーを登録
     const savedUserModel = await newUserModel.save()
+    savedUserModel.catch(( err ) => {
+      return err
+    })
 
     // 登録に成功したら成功したユーザーのオブジェクトを返す
     return savedUserModel
@@ -69,26 +72,18 @@ const addUserModel = async (userModelObj) => {
 }
 
 const findUserModelById = ( userId ) => {
-  const foundUserModelWithId = userModel.findById(
-    userId,
-    (err, foundUserModel) => {
-      if ( err ) {
-        return 'an Error ocurred in function \'findUserModelById\'.'
-      }
-    }
-  )
+  const foundUserModelWithId = userModel.findById(userId)
+  foundUserModelWithId.catch(( err ) => {
+    return `an Error ocurred in function \'findUserModelById\'. ${err}`
+  })
   return foundUserModelWithId
 }
 
 const getAllUsers = async () => {
-  const allUsers = await userModel.find(
-    {},
-    (err, allUsers) => {
-      if ( err ) {
-        return 'an Error ocurred in function \'getAllUsers\'.'
-      }
-    }
-  )
+  const allUsers = await userModel.find({})
+  allUsers.catch(( err ) => {
+    return `an Error ocurred in function \'getAllUsers\'. ${err}`
+  })
   return allUsers
 }
 
