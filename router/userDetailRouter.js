@@ -16,20 +16,19 @@ userDetailRouter
 
 // ユーザーから新規投稿を行うルーティングを定義(/user/:userId/post/create)
 userDetailRouter
-.get(
+.post(
   '/post/create',
 
   async (req, res) => {
-    const addResult = await addPostModel({
+    const body = req.body
+
+    await addPostModel({
       owner: req.params.userId,
-      title: 'testTitle4',
-      content: 'testContent4'
-    })
-    addResult.catch(( err ) => {
-      return err
+      title: body.title,
+      content: body.content
     })
 
-    res.send(addResult)
+    res.send('post created !!')
   }
 )
 

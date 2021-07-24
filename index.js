@@ -9,6 +9,9 @@ const express_srv = express()
 // ExpressでCORSを許可
 express_srv.use(cors())
 
+// Express内蔵のbody-parserを使用する
+express_srv.use(express.json())
+
 // データベースに接続(token, option, function)
 mongoose.connect(
 
