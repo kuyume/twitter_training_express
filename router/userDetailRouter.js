@@ -1,5 +1,5 @@
 import express from 'express'
-import { addPostModel, findPostModelByUser } from '../model/postModel.js'
+import { addPostModel, deletePostModel, findPostModelByUser } from '../model/postModel.js'
 
 // expressのルーターをインスタンス化
 const userDetailRouter = express.Router({ mergeParams: true })
@@ -29,6 +29,17 @@ userDetailRouter
     })
 
     res.send('post created !!')
+  }
+)
+
+
+userDetailRouter
+.get(
+  `/post/delete/:postId`,
+
+  async (req, res) => {
+    await deletePostModel(req.params.postId)
+    res.status(200).send('deleted.')
   }
 )
 

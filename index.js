@@ -1,10 +1,20 @@
+import fs from 'fs'
 import express from 'express'
-import mongoose from 'mongoose'
+import https from 'https'
 import cors from 'cors'
+import mongoose from 'mongoose'
 import rootRouter from './router/rootRouter.js'
 
 // expressサーバーをインスタンス化する
 const express_srv = express()
+
+// ExpressでHTTPSを有効化
+var options = {
+  key: fs.readFileSync( "/etc/ssl/private/test.key" ),
+  cert: fs.readFileSync( "/etc/ssl/private/test.crt" ),
+  passphrase: ''
+};
+const server = https.createServer(options, express_srv);
 
 // ExpressでCORSを許可
 express_srv.use(cors())
@@ -37,7 +47,7 @@ express_srv.use('', rootRouter)
 
 
 // ポートのリッスン（2500）
-express_srv.listen(
+server.listen(
   2500,
   () => {
 

@@ -37,31 +37,44 @@ const addPostModel = async ( postModelObj ) => {
   try {
 
     // バリデーション後に新しい投稿を登録
-    const savedPostModel = await newPostModel.save()
-    savedPostModel.catch(( err ) => {
-      return err
-    })
-    
+    const savedPostModel = await newPostModel.save()    
 
     // ユーザーモデルのpostに当該postを追加
-    const foundUserModelWithId = await findUserModelById( postModelObj.owner )
-
-    foundUserModelWithId.catch(( err ) => {
-      return err
-    }).then((userModelWithId) => {
+    await findUserModelById( postModelObj.owner )
+      .then((userModelWithId) => {
       userModelWithId.post.push(savedPostModel._id)
       return userModelWithId
     }).then((userModelWithId) => {
-      userModelWithId.save({})
+      userModelWithId.save()
     })
 
 
-    // 登録に成功したら成功したユーザーのオブジェクトを返す
+    // 登録に成功したら成功した投稿のオブジェクトを返す
     return savedPostModel
   }
   catch ( err ) {
     return err
   }
+}
+
+// ユーザーから投稿を削除する関数
+const deletePostModel = async (postId) => {
+  await postModel
+    .findById(postId)
+    .populate('owner')
+    .exec((err, post) => {
+      if ( err ) {
+        return err
+      }
+      const posts = post.owner.post
+      const index = posts.indexOf(postId)
+      if (index > -1) {
+        posts.splice(index, 1)
+        post.owner.save()
+      }
+    })
+    await postModel.findOneAndDelete({_id: postId})
+  return "deleted."
 }
 
 const findPostModelByUser = ( userId ) => {
@@ -88,4 +101,4 @@ const findAllPosts = () => {
 const postModel = mongoose.model('Post', postModelSchema)
 
 export default postModel
-export { addPostModel, findPostModelByUser, findPostModelById, findAllPosts }
+export { addPostModel, deletePostModel, findPostModelByUser, findPostModelById, findAllPosts }
