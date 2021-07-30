@@ -1,26 +1,30 @@
-import fs from 'fs'
-import express from 'express'
-import https from 'https'
-import cors from 'cors'
-import mongoose from 'mongoose'
-import rootRouter from './router/rootRouter.js'
+import express from 'express';
+import session from 'express-session';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import rootRouter from './router/rootRouter.js';
 
 // expressサーバーをインスタンス化する
-const express_srv = express()
+const expressSrv = express();
 
-// ExpressでHTTPSを有効化
-var options = {
-  key: fs.readFileSync( "/etc/ssl/private/test.key" ),
-  cert: fs.readFileSync( "/etc/ssl/private/test.crt" ),
-  passphrase: ''
+// Expressでセッションを使う準備
+const sess = {
+  secret: 'secret key',
+  cookie: {
+    maxAge: 6000, // ms
+    secure: false,
+  },
+  resave: false,
+  saveUninitialized: true,
 };
-const server = https.createServer(options, express_srv);
+
+expressSrv.use( session( sess ) );
 
 // ExpressでCORSを許可
-express_srv.use(cors())
+expressSrv.use( cors() );
 
 // Express内蔵のbody-parserを使用する
-express_srv.use(express.json())
+expressSrv.use( express.json() );
 
 // データベースに接続(token, option, function)
 mongoose.connect(
@@ -28,36 +32,44 @@ mongoose.connect(
   // DB connection token
   'mongodb+srv://deved:rhino11@cluster0.ywkyn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
 
-  // connect options 
+  // connect options
   {
     useNewUrlParser: true,
     useUnifiedTopology: true, // ??? unknown
-    useCreateIndex: true // apply useCreateIndex to create index in userModelSchema
+    useCreateIndex: true, // apply useCreateIndex to create index in userModelSchema
   },
   ( err ) => {
     if ( err ) {
-      return console.error( err )
+      return err;
     }
-    console.log('DB connected.')
-  }
-)
-
-// "/"パス以下でrootRouter（外部ファイル）の使用を宣言
-express_srv.use('', rootRouter)
-
+    console.log( 'DB connected.' );
+    return null;
+  },
+);
 
 // ポートのリッスン（2500）
-server.listen(
+expressSrv.listen(
   2500,
   () => {
+    console.log( 'server activated.' );
+  },
+);
 
+// ユーザー解決処理
+expressSrv.use( async ( req, res, next ) => {
+  if ( req.session.userId || req.path === '/user/login' || req.path === '/user/create' ) {
+    return next();
   }
-)
+  return res.json( { redirectPath: '/' } );
+} );
 
 // ルートのルーティングを定義
-express_srv.get(
+expressSrv.get(
   '',
-  (req, res) => {
-    res.send('first page.')
-  }
-)
+  ( req, res ) => {
+    res.send( 'first page.' );
+  },
+);
+
+// "/"パス以下でrootRouter（外部ファイル）の使用を宣言
+expressSrv.use( '', rootRouter );

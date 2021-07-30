@@ -1,91 +1,89 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose';
 
-const mongooseSchema = mongoose.Schema
+const MongooseSchema = mongoose.Schema;
 // ユーザーモデルのスキーマを定義
-const userModelSchema = new mongooseSchema({
+const userModelSchema = new MongooseSchema( {
   name: {
     type: String,
     required: true,
-    maxLength: 255
+    maxLength: 255,
   },
   email: {
     type: String,
     required: true,
     minLength: 10,
-    maxLength: 255
+    maxLength: 255,
     // unique: true
   },
   password: {
     type: String,
     required: true,
     minLength: 8,
-    maxLength: 255
+    maxLength: 255,
   },
   created_at: {
     type: Date,
     required: true,
-    default: Date.now()
+    default: Date.now(),
   },
   updated_at: {
     type: Date,
     required: true,
-    default: Date.now()
+    default: Date.now(),
   },
   post: [{
-    type: mongooseSchema.Types.ObjectId,
-    ref: 'Post'
-  }]
-})
+    type: MongooseSchema.Types.ObjectId,
+    ref: 'Post',
+  }],
+} );
 
 userModelSchema.index(
-  {email: 1},
-  {unique: true}
-)
+  { email: 1 },
+  { unique: true },
+);
 
 // テーブル名を指定してスキーマをモデル化して接続
-const userModel = mongoose.model('User', userModelSchema)
+const UserModel = mongoose.model( 'User', userModelSchema );
 
 // ユーザーモデルのインスタンスを登録する関数
-const addUserModel = async (userModelObj) => {
-
+const addUserModel = async ( userModelObj ) => {
   // 引数のオブジェクトを基に新しいユーザーモデルを作成
-  const newUserModel = new userModel(userModelObj)
+  const newUserModel = new UserModel( userModelObj );
 
   try {
     // バリデーション後に新しいユーザーを登録
-    const savedUserModel = await newUserModel.save()
-    savedUserModel.catch(( err ) => {
-      return err
-    })
+    const savedUserModel = await newUserModel.save();
+    savedUserModel.catch( ( err ) => err );
 
     // 登録に成功したら成功したユーザーのオブジェクトを返す
-    return savedUserModel
-  }
-  catch ( err ) {
-
+    return savedUserModel;
+  } catch ( err ) {
     // 重複エラーの場合
-    if( err.code === 11000 ) {
-      return 'email already exits.'
+    if ( err.code === 11000 ) {
+      return 'email already exits.';
     }
-    return err
+    return err;
   }
-}
+};
 
 const findUserModelById = ( userId ) => {
-  const foundUserModelWithId = userModel.findById(userId)
-  foundUserModelWithId.catch(( err ) => {
-    return `an Error ocurred in function \'findUserModelById\'. ${err}`
-  })
-  return foundUserModelWithId
-}
+  const foundUserModelWithId = UserModel.findById( userId );
+  foundUserModelWithId.catch( ( err ) => `an Error ocurred in function findUserModelById. ${err}` );
+  return foundUserModelWithId;
+};
+
+const findUserModelByEmail = async ( userEmail ) => {
+  const foundUserModelWithEmail = await UserModel.findOne( { email: userEmail } );
+  return foundUserModelWithEmail;
+};
 
 const getAllUsers = async () => {
-  const allUsers = await userModel.find({})
-  allUsers.catch(( err ) => {
-    return `an Error ocurred in function \'getAllUsers\'. ${err}`
-  })
-  return allUsers
-}
+  const allUsers = await UserModel.find( {} );
+  allUsers.catch( ( err ) => `an Error ocurred in function getAllUsers. ${err}` );
+  return allUsers;
+};
 
-export { addUserModel, findUserModelById, getAllUsers }
-export default userModel
+export {
+  addUserModel, findUserModelById, findUserModelByEmail, getAllUsers,
+};
+export default UserModel;
